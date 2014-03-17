@@ -1,7 +1,7 @@
-pagerduty-voicechat
+PagerDuty Webscripts
 ===================
 
-Code to automatically create a voicechatapi (plivo) conference for new pagerduty incidents. To use these:
+Code to do stuff with pagerduty and webscripts.io. To use these:
 
 1. Sign up for an account at webscript.io
 2. Create a new script
