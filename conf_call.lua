@@ -10,8 +10,6 @@ Since you'll need a read/write API key to do this, make sure you're using an obf
 
 -- Put your PagerDuty API key here.
 local PAGER_DUTY_TOKEN = ''
-local HIPCHAT_ROOM_ID = ''
-local HIPCHAT_TOKEN = ''
 
 -- Get the trigger type from the incident blob
 local trigger_type = json.parse(request.body).messages[1].type
