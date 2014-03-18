@@ -1,15 +1,18 @@
 --[[
+This script posts a conference call URL as a note, and also posts it to Hipchat.
+
 Use this script with webscripts.io to automatically create conference calls for new PagerDuty incidents.
 To get it working with your PagerDuty instance, change the subdomain in the API calls below to your subdomain.
 Also remember to put in your PagerDuty API key!
 
 Since you'll need a read/write API key to do this, make sure you're using an obfuscated URL for your endpoint–
 'mycompany.webscript.io/pdzlkjhsdafas' is better than 'mycompany.webscript.io/pagerduty'.
-
 --]]
 
 -- Put your PagerDuty API key here.
-local PAGER_DUTY_TOKEN = ''
+local PAGER_DUTY_TOKEN = 'your pagerduty api key'
+local HIPCHAT_ROOM = 'your hipchat id'
+local HIPCHAT_TOKEN = 'your hipchat auth token'
 
 -- Get the trigger type from the incident blob
 local trigger_type = json.parse(request.body).messages[1].type
@@ -64,6 +67,21 @@ http.request {
 
 }
 
+-- Post the conference URL to HipChat
+	
+http.request {
+    method='POST',
+    url='https://api.hipchat.com/v2/room/'..HIPCHAT_ROOM..'/notification?auth_token='..HIPCHAT_TOKEN..'',
+    headers={
+        ['Content-Type']='application/json'
+    },
+    data=json.stringify {
+    color='yellow',
+    message='An incident has triggered a new conference call. Please go to '..url..' to join the call',
+		message_format='text'			
+}
+
+}		
 	
 return trigger_type
 	
