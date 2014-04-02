@@ -91,21 +91,23 @@ You can also trigger events with just a service key - useful if you don't want t
 
 # Additional Tips
 
-- If you need to inspect an incoming webhook and webscript won't display the body because it's too long, just add a `log(request.body)` line somewhere in your code, and copy the output to something like [jsonprettyprint](http://jsonprettyprint.com/). The full body will output in the log tab. Alternatively, you can point the webhooks at [RequestBin](http://requestb.in/), and inspect them there.
+- If you need to inspect an incoming webhook and webscript won't display the body because it's too long, just add a `log(request.body)` line somewhere in your code. The full body will output in the log tab, and you can inspect it with something like [jsonprettyprint](http://jsonprettyprint.com/). Alternatively, you can point the webhooks at [RequestBin](http://requestb.in/), and inspect them there.
 
-- If there is an error in your code and you produce 500's, you may need to copy/paste to a new webscript URL. PagerDuty will treat multiple subsequent 500's as a sign of a bad URL, and delay or stop calling that URL for sometime.
+- If there is an error in your code and you produce 500's, you may need to copy/paste to a new webscript URL. PagerDuty will treat multiple subsequent 500's as a sign of a bad URL, and delay or stop calling that URL for some time.
 
-- If you want to make an outbound call through Plivo, I think you need to self-host on heroku, and may also need a paid plan. It's easy; instructions [here](https://github.com/plivo/voicechat/).
+- If you want to make an outbound call through Plivo, you need to self-host on heroku, and may also need a paid Plivo plan. It's easy; instructions [here](https://github.com/plivo/voicechat/).
+
+- To avoid pasting service keys into every script, you can store them all in a single foo.webscript.io/storestuff script. See storage_example.lua.
 
 
 # Ideas
-If you're looking to hack on something....here's a running list of scripts I'd like to make/see made:
+If you're looking to hack on something....here's a running list of scripts I'd like to make:
 
-- Get me the on-call from multiple teams: this one is tougher...you'd need to [query some schedules for the on-call users](http://support.pagerduty.com/entries/23586358-Determine-Who-Is-On-Call), get their contact information, and then place an outbound call with Plivo or Twilio).
-- Website uptime monitoring: well documented [here](https://www.webscript.io/examples/webmonitoring), just needs the PD part added.
+- Call the on-call from a schedule: you'd need to [query some schedules for the on-call users](http://support.pagerduty.com/entries/23586358-Determine-Who-Is-On-Call), get their contact information, and then place an outbound call with Plivo or Twilio.
+- ~~Website uptime monitoring~~: Done!
 - Turn a PD webhook into an emailhook [using your gmail account](https://www.webscript.io/examples/email).
 - Translate another service's webhooks into a PagerDuty API call.
-- Create sample guides for Campfire, Slack etc. like the HipChat one.
+- Create sample guides for Campfire, ~~Slack~~ etc. like the HipChat one.
 
 If you work on any of them, feel free to strike them from this list.
 
