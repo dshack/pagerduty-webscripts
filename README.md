@@ -8,7 +8,7 @@ Code to do stuff with pagerduty and webscripts.io. To use these:
 3. Paste the contents of the .lua file into your webscript
 4. Point your PagerDuty service at the webscript URL
 
-Webscripts uses Lua because [reasons](https://www.webscript.io/help#lua). It's pretty simple to learn, and they have a [tutorial](https://www.webscript.io/documentation/lua-tutorial).
+Webscripts uses Lua because [reasons](https://www.webscript.io/help#lua). It's pretty simple to learn, and they have a [tutorial](https://www.webscript.io/documentation/lua-tutorial) as well as a great [support team](support@webscript.io).
 
 
 # Setup basics
@@ -95,9 +95,7 @@ You can also trigger events with just a service key - useful if you don't want t
 
 - If there is an error in your code and you produce 500's, you may need to copy/paste to a new webscript URL. PagerDuty will treat multiple subsequent 500's as a sign of a bad URL, and delay or stop calling that URL for sometime.
 
-- If you want to make an outbound call through Plivo, I think you need to self-host on heroku, and may also need a paid plan. Don't worry, it's easy! Instructions [here](https://github.com/plivo/voicechat/)
-
-- The webscript.io [support team](support@webscript.io) is also great.
+- If you want to make an outbound call through Plivo, I think you need to self-host on heroku, and may also need a paid plan. It's easy; instructions [here](https://github.com/plivo/voicechat/).
 
 
 # Ideas
