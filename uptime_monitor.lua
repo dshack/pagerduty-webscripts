@@ -1,6 +1,8 @@
 --[[
 Use this to check whether a website is up. If the website is down, it creates a new PagerDuty incident. Otherwise, it resolves the incident.
 
+Note: once you've saved your script, go to https://www.webscript.io/cron and set it to run as a cron job.
+
 Because the script stores available status in an array through storage[domain], you can use it to check multiple sites: just create one webscript for each host you want to check.
 --]]
 
