@@ -108,6 +108,7 @@ If you're looking to hack on something....here's a running list of scripts I'd l
 - Turn a PD webhook into an emailhook [using your gmail account](https://www.webscript.io/examples/email).
 - Translate another service's webhooks into a PagerDuty API call.
 - Create sample guides for Campfire, ~~Slack~~ etc. like the HipChat one.
+- Take outbound PD webhooks and use them to do things in ticketing tools. For example, if a Zendesk or Freshdesk stale ticket  fires a PagerDuty event, you could use PagerDuty's outbound webhooks to assign the ticket to whoever acks it.
 
 If you work on any of them, feel free to strike them from this list.
 
