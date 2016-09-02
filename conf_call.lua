@@ -29,7 +29,7 @@ storage.incidentid = incidentid
 -- Call the Voice Chat API to create the conference.
 local response = http.request {
     method='POST',
-    url='http://voicechatapi.com/api/v1/conference/'
+    url='https://www.voicechatapi.com/api/v1/conference/'
 }
 
 -- Get the conference URL that VoiceChatAPI sends back.
@@ -46,10 +46,10 @@ local response = http.request {
     }
 	}
 
-local requester_id = json.parse(response.content).last_status_change_by.id
+local requester_id = json.parse(response.content).incident.last_status_change_by.id
 
 -- Get the email of the requester user
-http.request {
+local response = http.request {
   method='GET',
   url='https://api.pagerduty.com/users/' .. requester_id,
   headers = {
@@ -59,7 +59,7 @@ http.request {
   }
 }
 
-local requester = json.parse(response.content).email
+local requester = json.parse(response.content).user.email
 
 -- Add a note to the incident in Pager Duty with a link to the conference URL.
 http.request {
@@ -75,10 +75,8 @@ http.request {
     note={
         content=url
     }
+  }
 }
-
-}
-
 
 return trigger_type
 
