@@ -51,6 +51,7 @@ local response = http.request {
 
 local requester_id = json.parse(response.content).last_status_change_by.id
 
+-- Get the email for the requester user
 local response = http.request {
   method='GET',
   url='https://api.pagerduty.com/users/' .. requester_id .. '',

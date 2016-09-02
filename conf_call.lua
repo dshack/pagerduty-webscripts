@@ -46,7 +46,20 @@ local response = http.request {
     }
 	}
 
-local requester = json.parse(response.content).last_status_change_by.id
+local requester_id = json.parse(response.content).last_status_change_by.id
+
+-- Get the email of the requester user
+http.request {
+  method='GET',
+  url='https://api.pagerduty.com/users/' .. requester_id,
+  headers = {
+    Authorization='Token token=' .. PAGER_DUTY_TOKEN,
+    ['Content-Type']='application/json',
+    Accept='application/vnd.pagerduty+json;version=2'
+  }
+}
+
+local requester = json.parse(response.content).email
 
 -- Add a note to the incident in Pager Duty with a link to the conference URL.
 http.request {
@@ -55,10 +68,10 @@ http.request {
     headers={
         Authorization='Token token=' .. PAGER_DUTY_TOKEN,
         ['Content-Type']='application/json',
-				Accept='application/vnd.pagerduty+json;version=2'
+				Accept='application/vnd.pagerduty+json;version=2',
+        From=requester
     },
     data=json.stringify {
-    requester_id=requester,
     note={
         content=url
     }
