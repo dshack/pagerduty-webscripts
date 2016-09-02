@@ -19,20 +19,20 @@ local trigger_type = json.parse(request.body).messages[1].type
 
 -- Only fire when an incident is ack'd
 if trigger_type == "incident.acknowledge" then
-	
+
 -- Get the incident ID from the incident blob
 local incidentid = json.parse(request.body).messages[1].data.incident.id
 
--- Make sure we haven't seen this incident before	
-	
+-- Make sure we haven't seen this incident before
+
 if incidentid ~= storage.incidentid then
-	
+
 storage.incidentid = incidentid
-	
+
 -- Call the Voice Chat API to create the conference.
 local response = http.request {
     method='POST',
-    url='http://voicechatapi.com/api/v1/conference/'
+    url='https://www.voicechatapi.com/api/v1/conference/'
 }
 
 -- Get the conference URL that VoiceChatAPI sends back.
@@ -41,25 +41,40 @@ local url = json.parse(response.content).conference_url
 -- Get the assignee of the pagerduty incident.
 local response = http.request {
 	method='GET',
-	url='https://yoursubdomain.pagerduty.com/api/v1/incidents/' .. incidentid .. '',
+	url='https://api.pagerduty.com/incidents/' .. incidentid .. '',
 	headers={
         Authorization='Token token=' .. PAGER_DUTY_TOKEN,
-        ['Content-Type']='application/json'
+        ['Content-Type']='application/json',
+				Accept='application/vnd.pagerduty+json;version=2'
     }
 	}
 
-local requester = json.parse(response.content).last_status_change_by.id
+local requester_id = json.parse(response.content).incident.last_status_change_by.id
+
+-- Get the email for the requester user
+local response = http.request {
+  method='GET',
+  url='https://api.pagerduty.com/users/' .. requester_id .. '',
+  headers={
+    Authorization='Token token=' .. PAGER_DUTY_TOKEN,
+    ['Content-Type']='application/json',
+    Accept='application/vnd.pagerduty+json;version=2'
+  }
+}
+
+local requester = json.parse(response.content).user.email
 
 -- Add a note to the incident in Pager Duty with a link to the conference URL.
 http.request {
     method='POST',
-    url='https://yoursubdomain.pagerduty.com/api/v1/incidents/' .. incidentid .. '/notes',
+    url='https://api.pagerduty.com/incidents/' .. incidentid .. '/notes',
     headers={
         Authorization='Token token=' .. PAGER_DUTY_TOKEN,
-        ['Content-Type']='application/json'
+        ['Content-Type']='application/json',
+				Accept='application/vnd.pagerduty+json;version=2',
+        From=requester
     },
     data=json.stringify {
-    requester_id=requester,
     note={
         content=url
     }
@@ -68,7 +83,7 @@ http.request {
 }
 
 -- Post the conference URL to HipChat
-	
+
 http.request {
     method='POST',
     url='https://api.hipchat.com/v2/room/'..HIPCHAT_ROOM..'/notification?auth_token='..HIPCHAT_TOKEN..'',
@@ -78,15 +93,15 @@ http.request {
     data=json.stringify {
     color='yellow',
     message='An incident has triggered a new conference call. Please go to '..url..' to join the call',
-		message_format='text'			
+		message_format='text'
 }
 
-}		
-	
+}
+
 return trigger_type
-	
+
 else
-	
+
 end
-	
+
 else end

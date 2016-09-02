@@ -1,7 +1,7 @@
 # PagerDuty Webscripts
 
 
-Code to do stuff with pagerduty and webscripts.io. To use these:
+Code to do stuff with pagerduty and webscript.io. To use these:
 
 1. Sign up for an account at webscript.io
 2. Create a new script
@@ -13,7 +13,7 @@ Webscripts uses Lua because [reasons](https://www.webscript.io/help#lua). It's p
 
 # Setup basics
 
-1. Sign up for an account at [webscript.io](http://webscripts.io). The free plan will work for testing, but scripts expire after 7 days, so you may want the (very reasonable) $4.95/month plan if you like the service and plan on using it long-term.
+1. Sign up for an account at [webscript.io](http://www.webscript.io). The free plan will work for testing, but scripts expire after 7 days, so you may want the (very reasonable) $4.95/month plan if you like the service and plan on using it long-term.
 
 2. Create a new script.
 
@@ -23,7 +23,7 @@ Webscripts uses Lua because [reasons](https://www.webscript.io/help#lua). It's p
 
 
 # PagerDuty Webhook notes
-Full guide to webhooks [here](http://developer.pagerduty.com/documentation/rest/webhooks).
+Full guide to webhooks [here](https://v2.developer.pagerduty.com/docs/webhooks-overview).
 
 - Getting an element (ex. incident ID) from a PagerDuty webhook blob looks like this:
 
@@ -39,7 +39,7 @@ Full guide to webhooks [here](http://developer.pagerduty.com/documentation/rest/
 
 		if incidentid ~= storage.incidentid then
 		storage.incidentid = incidentid else (some code)
-		
+
 # PagerDuty API notes
 
 You'll need to generate a read/write API key if you want to post notes. For most other operations, a read-only key should be fine. For more information, see the PD [Integration API docs](http://developer.pagerduty.com/documentation/integration/events).
@@ -48,10 +48,11 @@ Sample call to get incidents looks like this:
 
 		local response = http.request {
 			method='GET',
-			url='https://subdomain.pagerduty.com/api/v1/incidents/' .. incidentid .. '',
+			url='https://api.pagerduty.com/incidents/' .. incidentid .. '',
 			headers={
 		        Authorization='Token token=PAGER_DUTY_TOKEN,
-		        ['Content-Type']='application/json'
+		        ['Content-Type']='application/json',
+						Accept='application/vnd.pagerduty+json;version=2'
 		    }
 			}
 
@@ -59,18 +60,19 @@ Posting a note looks like this:
 
 		http.request {
 		    method='POST',
-		    url='https://subdomain.pagerduty.com/api/v1/incidents/' .. incidentid .. '/notes',
+		    url='https://api.pagerduty.com/incidents/' .. incidentid .. '/notes',
 		    headers={
 		        Authorization='Token token=PAGER_DUTY_TOKEN,
-		        ['Content-Type']='application/json'
+		        ['Content-Type']='application/json',
+						Accept='application/vnd.pagerduty+json;version=2',
+						From=requester
 		    },
 		    data=json.stringify {
-		    requester_id=requester,
 		    note={
 		        content='STUFF_THAT_GOES_IN_NOTE'
 		    }
 		}
-		
+
 		}
 
 You can also trigger events with just a service key - useful if you don't want to grant full account access to a script.
@@ -86,7 +88,7 @@ You can also trigger events with just a service key - useful if you don't want t
 	    event_type='trigger',
 	    description=DESCRIPTION
 	}
-	
+
 	}
 
 # Additional Tips
@@ -115,7 +117,3 @@ If you work on any of them, feel free to strike them from this list.
 # Improvements? Comments?
 
 Go ahead and submit a pull request for changes. For feedback, email [dshack@pagerduty.com](dshack@pagerduty.com). I'd love to see what you make with this.
-
-
-
-
