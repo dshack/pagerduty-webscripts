@@ -16,16 +16,16 @@ local trigger_type = json.parse(request.body).messages[1].type
 
 -- Only fire when an incident is ack'd
 if trigger_type == "incident.acknowledge" then
-	
+
 -- Get the incident ID from the incident blob
 local incidentid = json.parse(request.body).messages[1].data.incident.id
 
--- Make sure we haven't seen this incident before	
-	
+-- Make sure we haven't seen this incident before
+
 if incidentid ~= storage.incidentid then
-	
+
 storage.incidentid = incidentid
-	
+
 -- Call the Voice Chat API to create the conference.
 local response = http.request {
     method='POST',
@@ -38,10 +38,11 @@ local url = json.parse(response.content).conference_url
 -- Get the assignee of the pagerduty incident.
 local response = http.request {
 	method='GET',
-	url='https://yoursubdomain.pagerduty.com/api/v1/incidents/' .. incidentid .. '',
+	url='https://api.pagerduty.com/incidents/' .. incidentid .. '',
 	headers={
         Authorization='Token token=' .. PAGER_DUTY_TOKEN,
-        ['Content-Type']='application/json'
+        ['Content-Type']='application/json',
+				Accept='application/vnd.pagerduty+json;version=2'
     }
 	}
 
@@ -50,10 +51,11 @@ local requester = json.parse(response.content).last_status_change_by.id
 -- Add a note to the incident in Pager Duty with a link to the conference URL.
 http.request {
     method='POST',
-    url='https://yoursubdomain.pagerduty.com/api/v1/incidents/' .. incidentid .. '/notes',
+    url='https://api.pagerduty.com/incidents/' .. incidentid .. '/notes',
     headers={
         Authorization='Token token=' .. PAGER_DUTY_TOKEN,
-        ['Content-Type']='application/json'
+        ['Content-Type']='application/json',
+				Accept='application/vnd.pagerduty+json;version=2'
     },
     data=json.stringify {
     requester_id=requester,
@@ -64,11 +66,11 @@ http.request {
 
 }
 
-	
+
 return trigger_type
-	
+
 else
-	
+
 end
-	
+
 else end
